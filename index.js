@@ -2,6 +2,7 @@ var electron = require('electron');
 var BrowserWindow = electron.BrowserWindow;
 var app = electron.app;
 var mysql = require('mysql');
+var ipc = electron.ipcMain;
 
 var connect = mysql.createConnection({
     host: "localhost",
@@ -19,9 +20,15 @@ app.on('ready', function() {
     var appWindow;
     var appWindow = new BrowserWindow({
         width: 1000,
-        height: 1000,
+        height: 700,
 
     });
     appWindow.loadURL('file://' + __dirname + '/index.html');
-
+    
 });
+ipc.on('submitClick', function(event) {
+    console.log("clicked");
+    event.returnValue = "";
+});
+
+
