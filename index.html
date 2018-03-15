@@ -1,61 +1,4 @@
-<!DOCTYPE html>
-<?php
 
-date_default_timezone_set("America/New_York");
-
-include("database.php");
-
-$db = db_connect();
-
-if(isset($_POST["submit"])) {
-
-    $file_name = $_FILES["file"]["name"];
-    $file_size = $_FILES["file"]["size"];
-    $tmp_name = $_FILES['file']['tmp_name'];
-    $date = date("Y/m/d");
-    $time = date("H:i:s");
-    $timestamp = time();
-    $date_accessed = null;
-    $time_accessed = null;
-
-    $sql = "INSERT INTO files ";
-    $sql .= "(filename, date_created, time_created, date_accessed, time_accessed, timestamp, file_size) ";
-    $sql .= "VALUES (";
-    $sql .= "'" . $file_name . "',";
-    $sql .= "'" . $date . "',";
-    $sql .= "'" . $time . "',";
-    $sql .= "'" . $date_accessed . "',";
-    $sql .= "'" . $time_accessed . "',";
-    $sql .= "'" . $timestamp . "',";
-    $sql .= "'" . $file_size . "'";
-    $sql .= ")";
-
-    $result = mysqli_query($db, $sql);
-
-    if($result) {
-        echo "<div style='width:100%;background-color:greenyellow;display:flex;border:1px solid black;margin-bottom:5px'>" . "<p style='margin:auto'>Upload Successful!</p>" . "</div>";
-    } else {
-        echo "<div style='width:100%;background-color:crimson;display:flex;border:1px solid black;margin-bottom:5px'>" . "<p style='margin:auto'>Duplicate Entry Detected</p>" . "</div>";
-    }
-
-    if (move_uploaded_file($tmp_name, "uploads/".$file_name)) {
-        //
-    } else {
-        //
-    }
-
-}
-function find_all_uploads() {
-    global $db;
-    $sql = "SELECT * FROM files ";
-    $sql .= "ORDER BY id DESC";
-    $result = mysqli_query($db, $sql);
-    return $result;
-}
-
-$uploads_array = find_all_uploads();
-
-?>
 <html>
     <head>
         <meta charset="utf-8">
@@ -69,7 +12,7 @@ $uploads_array = find_all_uploads();
         </style>
     </head>
     <body>
-        <div style="display:flex">
+        <div style="display:flex; margin: 0px">
             <div style="margin:auto">
                 <div style="width:15px;height:15px;border:1px solid black;background-color:greenyellow;border-radius:100%;display:inline-block"></div>
                 <p id="newp" style="font-size:15px;display:inline-block">: Accessed Earlier</p>
@@ -77,8 +20,8 @@ $uploads_array = find_all_uploads();
                 <p id="newp" style="font-size:15px;display:inline-block">: Accessed Later</p>
             </div>
         </div>
-        <div id="outer">
-            <form id="form" action="" method="POST" enctype="multipart/form-data">
+
+            <form id="form" action="handle.php" method="POST" enctype="multipart/form-data">
                 <input type="file" id="file" name="file">
                 <input type="submit" id="submit" name="submit" value="Upload">
             </form>
@@ -118,8 +61,10 @@ $uploads_array = find_all_uploads();
                 <div id="file_data"></div>
             </div>
 
-        </div>
-        <script>
+
+
+    </body>
+    <script>
 
             $("tr").click(function() {
                 var timestamp = $(this).find(".timestamp").text();
@@ -236,12 +181,10 @@ $uploads_array = find_all_uploads();
                     var month = new Date().getMonth() + 1;
                     var day = new Date().getDate();
                     var newDateAccessed = year + "-" + month + "-" + day;
-
                     var hours = new Date().getHours();
                     var minutes = new Date().getMinutes();
                     var seconds = new Date().getSeconds();
                     var newTimeAccessed = hours + ":" + minutes + ":" + seconds;
-
                     var newTimeStamp = Math.floor(Date.now()/1000);
 
                     $.ajax({
@@ -266,5 +209,4 @@ $uploads_array = find_all_uploads();
             })
 
         </script>
-    </body>
 </html>

@@ -1,0 +1,8 @@
+{
+    "name": "timestamp_app_electron",
+    "version": "1.0.0",
+    "devDependencies": {
+        "electron": "^1.8.3",
+        "mysql": "^2.15.0"
+    }
+}
